@@ -5,8 +5,7 @@ include('includesphp/conexion.php');
 if( isset($_POST["num"]) ){
     $num=$_POST["num"];
     $code=$_POST["code"];
-    $query="SELECT a.* FROM num a WHERE a.num='$num' and 
-            CASE WHEN $code>0 THEN a.country_id=$code ELSE TRUE END AND a.act";
+    $query="SELECT a.* FROM num a WHERE a.num = '+".$code.$num."' AND a.act";
     $result= mysqli_query($connection,$query);
 
     if(!$result) {
@@ -19,29 +18,52 @@ if( isset($_POST["num"]) ){
 
     if(mysqli_num_rows($result)==0){
 
-        $query="INSERT INTO num (num, country_id)
-            VALUES ('$num', $code)
-            ON DUPLICATE KEY UPDATE act=true";
+        $query="SELECT a.* FROM num a WHERE a.num = '+".$code.$num."' AND not a.act";
 
         $result= mysqli_query($connection,$query);
+        
+        if(mysqli_num_rows($result)==0){
+            $query="INSERT INTO num (num)
+                VALUES ('+".$code.$num."')";
 
-        if(!$result) {
-            $json[] = array(
-                "result" => "danger",
-                "text" => "Ocurrió un percanse agregando el número <b>$num</b>.<br>Intentelo de nuevo más tarde."
-            );
+            $result= mysqli_query($connection,$query);
+
+            if(!$result) {
+                $json[] = array(
+                    "result" => "danger",
+                    "text" => "Ocurrió un percanse agregando el número <b>+".$code.$num."</b>.<br>Intentelo de nuevo más tarde."
+                );
+            }else{
+                $json[] = array(
+                    "result" => "success",
+                    "text" => "El número <b>+".$code.$num."</b> fue agregado exitosamente."
+                );
+            }
         }else{
-            $json[] = array(
-                "result" => "success",
-                "text" => "El número <b>$num</b> fue agregado exitosamente."
-            );
+
+            $query="UPDATE num SET act=true WHERE num='+".$code.$num."' ";
+
+            $result= mysqli_query($connection,$query);
+
+            if(!$result) {
+                $json[] = array(
+                    "result" => "danger",
+                    "text" => "Ocurrió un percanse agregando el número <b>+".$code.$num."</b>.<br>Intentelo de nuevo más tarde."
+                );
+            }else{
+                $json[] = array(
+                    "result" => "success",
+                    "text" => "El número <b>+".$code.$num."</b> fue agregado exitosamente."
+                );
+            }
+
         }
 
         
     }else{
         $json[] = array(
             "result" => "danger",
-            "text" => "El número <b>$num</b> no pudo ser agregado, ya existe."
+            "text" => "El número <b>+".$code.$num."</b> no pudo ser agregado, ya existe!"
         );
     }
 
@@ -53,11 +75,9 @@ if(isset($_GET["num"])){
     $num=$_GET["num"];
     $code=$_GET["code"];
     $query="SELECT a.id,
-        CONCAT(CASE WHEN $code>0 THEN '' ELSE CONCAT(coalesce(c.code,''),' ',coalesce(concat('+',c.phone),''),' ') END ,a.num) as num,
-        coalesce(c.name,'') as pais
-        FROM num a left join countries c on a.country_id=c.id
-        where a.act AND CASE WHEN '$num'<>'' THEN a.num like '%$num%' ELSE TRUE END and 
-        CASE WHEN $code>0 THEN a.country_id=$code ELSE TRUE END ORDER BY id DESC LIMIT 2000";
+        a.num as num,
+        '' as pais
+        FROM num a WHERE a.num like '%+".$code.$num."%' ORDER BY id DESC LIMIT 2000";
     
     $result= mysqli_query($connection,$query);
 

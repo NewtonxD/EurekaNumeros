@@ -1,9 +1,9 @@
 <?php
 
 $host='localhost';
-$user='root';
-$pwd='*D3stroy3r3010';
-$db='vatos';
+$user='u681746739_eureka';
+$pwd='*Eureka55@';
+$db='u681746739_55654484';
 
 $connection = mysqli_connect(
     $host, $user, $pwd, $db

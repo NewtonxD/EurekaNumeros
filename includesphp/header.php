@@ -5,21 +5,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
 -->
 <html class="h-100" data-bs-theme="auto">
     <head>
-        <title>VATOS POR DO QUIER</title>
+        <title>EUREKA NUMBERS</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="./src/css/bootstrap.min.css" rel="stylesheet" >
         <link href="./src/css/styles.css" rel="stylesheet" >
     </head>
 
-    <body  class="d-flex flex-column h-100">
+    <body  class="d-flex flex-column h-100 bg-dark text-white">
 
 
 <header>
-  <!-- Fixed navbar -->
+  <!-- Fixed navbar 
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand" href="./index.php#home">VATOS SRL</a>
+      <a class="navbar-brand" href="./index.php#home"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -28,14 +28,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="./index.php#home">Home</a>
           </li>
-          <!--<li class="nav-item">
+          <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-          </li>-->
+          </li>
         </ul>
       </div>
     </div>
-  </nav>
+  </nav>-->
 </header>
