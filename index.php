@@ -60,13 +60,13 @@
             </div>
             <div class="col-12 col-lg-8 mb-4">
                 <div class="input-group input-group-lg">
-                    <input type="file" class="form-control" name="filenumber" id="filenumber" aria-describedby="btnfile"/>
+                    <input type="file" class="form-control" name="filenumber" id="filenumber" aria-describedby="btnfile" multiple accept=".csv"/>
                     <button type="button" class="btn btn-secondary fw-bold "  id="btnfile"><b>Procesar</b></button>
                 </div>
             </div>
             <div class="col-12 col-lg-8 text-center mt-4">
                 <h4>Ultimos archivos exportados:</h4>
-                <div id="fileList" class="list-group"></div>
+                <div id="fileList" class="list-group fileList"></div>
             </div>
         </div>
         <div class="col-12 col-lg-8">

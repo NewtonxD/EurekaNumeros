@@ -203,21 +203,29 @@ function procesarArchivo(){
             '</div>');
             return;
     }
+    
+    $(document.body).css({'cursor' : 'wait'});
 
     var formData=new FormData();
-    formData.append("filenumber",$("#filenumber").prop("files")[0]);
+
+
+    for (var i = 0; i < fileInput.prop("files").length; i++) {
+        formData.append('filenumber[]', $("#filenumber").prop("files")[i]);
+    }
+
     formData.append("prefix",$("#pre").val());
+
+    console.log(formData);
 
     $.ajax({
         url:'file-numbers.php',
         type:"POST",
-        async:false,
+        async:true,
         data:formData,
         processData: false,
         contentType: false,
         success: function(response){
             //var res=$.parseJSON(response);
-            console.log(response);
             /*if(res[0].result==="success") num_procesados+=1;
 
             $("#results").prepend(
@@ -239,11 +247,22 @@ function procesarArchivo(){
             // Cleanup
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
+
+            $("#fileList").empty();
+            listFiles();
+            $(document.body).css({'cursor' : 'default'});
         },
         error: function(response){
             console.log(response);
         }
     });  
+}
+
+function clickFirstXElements(divId, x) {
+    // Select the first x <a> elements within the specified div
+    $(divId).find('a').slice(0, x).each(function() {
+        $(this).trigger('click');
+    });
 }
 
 function listFiles(){
@@ -259,7 +278,7 @@ function listFiles(){
 
             // Iterate over file list and append to HTML
             $.each(response, function(index, file) {
-                $('#fileList').append('<a  class="list-group-item list-group-item-action" href="download.php?filename=' + file.filename + '">' + file.filename + '</a>');
+                $('#fileList').append('<a  class="list-group-item list-group-item-action" href="download.php?filename=' + file.filename + '">'+index+'. '+ file.filename + '</a>');
             });
         },
         error: function(xhr, status, error) {

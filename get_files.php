@@ -2,10 +2,14 @@
 $uploadDir = __DIR__ . '/.upload/';
 
 // Get list of files in upload directory
-$files = scandir($uploadDir);
-
+$files = [];
+if (is_dir($uploadDir)){
+    $files = scandir($uploadDir);
+}
 // Remove . and .. from file list
-$files = array_diff($files, array('.', '..'));
+if($files!==false){
+    $files = array_diff($files, array('.', '..'));
+}
 
 // Get file creation dates
 $fileList = [];
