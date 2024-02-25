@@ -183,6 +183,92 @@ function borrarNum(num){
     $('#txtnum').focus();
 }
 
+function procesarArchivo(){
+    if($("#pre").val()==""){
+        $("#pre").focus();
+        $("#results").prepend(
+        `<div class="alert alert-danger alert-dismissible" role="alert">`+
+        `   <div> Debe llenar el prefijo para poder nombrar los contactos Ejm: ABC 01 .</div>`+
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
+        '</div>');
+        return;
+    }
+
+    var fileInput = $('#filenumber');
+    if (fileInput.prop("files").length === 0) {
+        $("#results").prepend(
+            `<div class="alert alert-danger alert-dismissible" role="alert">`+
+            `   <div> Debe llenar escoger el archivo antes de empezar .</div>`+
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
+            '</div>');
+            return;
+    }
+
+    var formData=new FormData();
+    formData.append("filenumber",$("#filenumber").prop("files")[0]);
+    formData.append("prefix",$("#pre").val());
+
+    $.ajax({
+        url:'file-numbers.php',
+        type:"POST",
+        async:false,
+        data:formData,
+        processData: false,
+        contentType: false,
+        success: function(response){
+            //var res=$.parseJSON(response);
+            console.log(response);
+            /*if(res[0].result==="success") num_procesados+=1;
+
+            $("#results").prepend(
+            `<div class="alert alert-${res[0].result} alert-dismissible" role="alert">`+
+            `   <div> ${res[0].result=="success"?num_procesados+".":""} ${res[0].text}</div>`+
+            '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
+            '</div>');*/
+
+            var blob = new Blob([response], { type: 'text/x-vcard' });
+            var url = window.URL.createObjectURL(blob);
+
+            // Create a link element and trigger download
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'dummy_contact.vcf';
+            document.body.appendChild(a);
+            a.click();
+
+            // Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        },
+        error: function(response){
+            console.log(response);
+        }
+    });  
+}
+
+function listFiles(){
+    $.ajax({
+        url: 'get_files.php', // PHP script to retrieve file list
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            // Sort files by creation date in descending order
+            response.sort(function(a, b) {
+                return new Date(b.creation_date) - new Date(a.creation_date);
+            });
+
+            // Iterate over file list and append to HTML
+            $.each(response, function(index, file) {
+                $('#fileList').append('<a  class="list-group-item list-group-item-action" href="download.php?filename=' + file.filename + '">' + file.filename + '</a>');
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching file list:', error);
+            // Handle errors
+        }
+    });
+}
+
 $(document).ready(function(){
 
 
@@ -201,7 +287,11 @@ $(document).ready(function(){
         }
     });*/
 
+    listFiles();
+
     $("#btnadd").on("click",guardarNumero);
+
+    $("#btnfile").on("click",procesarArchivo);
 
 
     $('#txtnum').keyup(function (e) {
@@ -257,6 +347,31 @@ $(document).ready(function(){
         }
     });
 
+    $('#switch-archivos').change(function(e){
+        $('#txtnum').val("");
+
+        if($('#switch-archivos').is(":checked")) {
+
+            $("#numeros").css("visibility","hidden");
+            $("#numeros").css("position","absolute");
+
+            $("#files").css("visibility","visible");
+            $("#files").css("position","relative");
+
+
+
+        }else{
+
+            $("#files").css("visibility","hidden");
+            $("#files").css("position","absolute");
+
+            $('#txtnum').focus();
+
+            $("#numeros").css("visibility","visible");
+            $("#numeros").css("position","relative");
+        }
+    });
+
     $('#selcode').keypress(function(e) {
         // Check if the pressed key is Enter (key code 13)
         if (e.which == 13) {
@@ -268,6 +383,9 @@ $(document).ready(function(){
           
         }
       });
+
+        // AJAX request to retrieve file list from server
+    
     /*$('#selcode').change(function(e){
         if($(this).val()>0) {
             $("#maxlen").val(codes[$('#selcode').val()]);

@@ -17,13 +17,15 @@
         <div class="col-auto">
             <input type="hidden" value="99" id="maxlen"/>
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" style="width:60px;height:24px" role="switch" id="switcher" max="9999999999">
-                <label class="form-check-label ms-4 mt-1" for="switcher">Busqueda de datos</label>
+                <!--<input class="form-check-input" type="checkbox" style="width:60px;height:24px" role="switch" id="switcher" max="9999999999">
+                    <label class="form-check-label ms-4 mt-1" for="switcher">Busqueda de datos</label>-->
+                <input class="form-check-input" type="checkbox" style="width:60px;height:24px" role="switch" id="switch-archivos" max="9999999999">
+                <label class="form-check-label ms-4 mt-1  fw-bold" for="switch-archivos">Procesar Archivos</label>
             </div>
         </div>
     </div>
     <div class="row g-3 d-flex justify-content-center">
-        <div class="col-12 col-lg-8 col-xl-6 row">
+        <div class="col-12 col-lg-8 col-xl-6 row" id="numeros">
             <div class="col-4">
                 <div class="input-group input-group-lg">
                     <span class="input-group-text"> + </span>
@@ -43,10 +45,31 @@
             </div>
             <div class="col-12">
                 <div class="mt-3">
-                    <button type="button" class="btn btn-success" id="btndel"><b>Limpiar</b></button>
+                    <button type="button" class="btn btn-success btn-lg fw-bold" id="btndel"><b>Limpiar</b></button>
                 </div>
-            </div>    
+            </div>   
             <img height="35px"src="src/img/loading-7528_256.gif" class="mt-2 mb-2" id="spinload" style="visibility:hidden" />
+        </div>
+        <div class="col-12 col-lg-8 row d-flex justify-content-center" style="position:absolute; visibility:hidden;" id="files">
+            <div class="col-12 col-lg-4 mb-4">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">Prefijo</span>
+                    <input type="text" class="form-control" id="pre" name="prefix" placeholder="">
+                    
+                </div>
+            </div>
+            <div class="col-12 col-lg-8 mb-4">
+                <div class="input-group input-group-lg">
+                    <input type="file" class="form-control" name="filenumber" id="filenumber" aria-describedby="btnfile"/>
+                    <button type="button" class="btn btn-secondary fw-bold "  id="btnfile"><b>Procesar</b></button>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8 text-center mt-4">
+                <h4>Ultimos archivos exportados:</h4>
+                <div id="fileList" class="list-group"></div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-8">
             <div id="results"></div>
         </div>
         <div class="col-12 col-lg-8 col-xl-6" style="display:none" id="tbsearch">
