@@ -13,6 +13,33 @@ function formatNumber($number) {
     }
 }
 
+// Function to detect CSV delimiter
+function detect_csv_delimiter($file_path) {
+    $delimiters = [',', ';']; // Possible CSV delimiters
+
+    // Open the file
+    $file_handle = fopen($file_path, 'r');
+    if (!$file_handle) {
+        return false; // Unable to open file
+    }
+
+    // Read the first line of the file
+    $first_line = fgets($file_handle);
+    fclose($file_handle);
+
+    // Check which delimiter occurs more in the first line
+    $delimiter_count = [];
+    foreach ($delimiters as $delimiter) {
+        $delimiter_count[$delimiter] = substr_count($first_line, $delimiter);
+    }
+
+    // Get the delimiter with the maximum occurrence
+    $max_occurrence = max($delimiter_count);
+    $detected_delimiter = array_search($max_occurrence, $delimiter_count);
+
+    return $detected_delimiter;
+}
+
 if( isset($_POST["prefix"]) ){
 
     $cant=0;
@@ -26,67 +53,73 @@ if( isset($_POST["prefix"]) ){
         $tmp_name = $_FILES['filenumber']['tmp_name'][$key];
         // Retrieve the original file name
         //$name = $_FILES['filenumber']['name'];
-
-        $file = fopen($tmp_name, "r");
-        if($file){
-            $first=0;
-
-            while (($row = fgetcsv($file)) !== false) {
-                
-                if($first>0){
-                    $col=0;
-                    $nombre="";
-                    $numero="";
-                    foreach ($row as $column) {
-                        if($col==0){
-                            $nombre=preg_replace('/[^a-zA-Z0-9]/', '',$column);
-                        }else{
-                            $numero=preg_replace('/[^a-zA-Z0-9]/', '',$column);
+        
+        $delimiter=detect_csv_delimiter($tmp_name);
+        if ($delimiter !== false) {
+            $file = fopen($tmp_name, "r");
+            if($file){
+                $first=0;
+    
+                while (($row = fgetcsv($file,0,$delimiter)) !== false) {
+                    
+                    if($first>0){
+                        $col=0;
+                        $nombre="";
+                        $numero="";
+                        foreach ($row as $column) {
+                            if($col==0){
+                                $nombre=preg_replace('/[^a-zA-Z]/', '',$column);
+                            }
+                            if($col==1){
+                                $numero=preg_replace('/[^0-9]/', '',$column);
+                            }
+                            $col++;
                         }
-                        $col++;
-                    }
-
-                    $query="SELECT * FROM num WHERE num like '%$numero%'";
-                    $result= mysqli_query($connection,$query);
-
-                    if(!$result) {
-                        die('Query Error 1 ' . mysqli_error($connection));
-                    }
-
-                    if(mysqli_num_rows($result)==0){
-
-                        $query="INSERT INTO num (num) VALUES ('+".$numero."')";
+    
+                        $query="SELECT * FROM num WHERE num like '%$numero%'";
                         $result= mysqli_query($connection,$query);
-
+    
                         if(!$result) {
-                            die('Query Error 2 ' . mysqli_error($connection));
+                            die('Query Error 1 ' . mysqli_error($connection));
+                        }else{
+    
+                            if(mysqli_num_rows($result)==0){
+        
+                                $query="INSERT INTO num (num) VALUES ('+".$numero."')";
+                                $result= mysqli_query($connection,$query);
+        
+                                if(!$result) {
+                                    die('Query Error 2 ' . mysqli_error($connection));
+                                }
+                                $cant++;
+                                
+                                $vcffile .= "\r\nBEGIN:VCARD\r\n";
+                                $vcffile .= "VERSION:2.1\r\n";
+                                $vcffile .= "N:".$nombre.";".$prefijo.";".formatNumber($cant).";;\r\n";
+                                $vcffile .= "FN:".$prefijo." ".formatNumber($cant)." ".$nombre."\r\n";
+                                $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
+                                $vcffile .= "END:VCARD";
+        
+                            }else{
+                                //nada nananina con ese numero
+                                $cant_rep++;
+                                
+                                $vcffile .= "\r\nBEGIN:VCARD\r\n";
+                                $vcffile .= "VERSION:2.1\r\n";
+                                $vcffile .= "N:".$nombre.";Rep".$prefijo.";".formatNumber($cant_rep).";;\r\n";
+                                $vcffile .= "FN:Rep".$prefijo." ".formatNumber($cant_rep)." ".$nombre."\r\n";
+                                $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
+                                $vcffile .= "END:VCARD";
+                            }
+                            
                         }
-                        $cant++;
-                        
-                        $vcffile .= "\r\nBEGIN:VCARD\r\n";
-                        $vcffile .= "VERSION:2.1\r\n";
-                        $vcffile .= "N:".$nombre.";".$prefijo.";".formatNumber($cant).";;\r\n";
-                        $vcffile .= "FN:".$prefijo." ".formatNumber($cant)." ".$nombre."\r\n";
-                        $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
-                        $vcffile .= "END:VCARD";
-
-                    }else{
-                        //nada nananina con ese numero
-                        $cant_rep++;
-                        
-                        $vcffile .= "\r\nBEGIN:VCARD\r\n";
-                        $vcffile .= "VERSION:2.1\r\n";
-                        $vcffile .= "N:".$nombre.";Rep".$prefijo.";".formatNumber($cant_rep).";;\r\n";
-                        $vcffile .= "FN:Rep".$prefijo." ".formatNumber($cant_rep)." ".$nombre."\r\n";
-                        $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
-                        $vcffile .= "END:VCARD";
+    
                     }
-
+                    $first++;
                 }
-                $first++;
+    
+                fclose($file);
             }
-
-            fclose($file);
         }
     }
 
