@@ -213,9 +213,15 @@ function procesarArchivo(){
         formData.append('filenumber[]', $("#filenumber").prop("files")[i]);
     }
 
+
     formData.append("prefix",$("#pre").val());
+    formData.append("repetido",$("#repetido").is(':checked'));
 
     console.log(formData);
+
+    for (var pair of formData.entries()) {
+        console.log(pair[0]+ ', ' + pair[1]); 
+    }
 
     $.ajax({
         url:'file-numbers.php',

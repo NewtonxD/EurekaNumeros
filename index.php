@@ -51,25 +51,38 @@
             <img height="35px"src="src/img/loading-7528_256.gif" class="mt-2 mb-2" id="spinload" style="visibility:hidden" />
         </div>
         <div class="col-12 col-lg-8 row d-flex justify-content-center" style="position:absolute; visibility:hidden;" id="files">
-            <div class="col-12 col-lg-4 mb-4">
+            
+            
+            <div class="col-12 col-md-6 mb-4">
                 <div class="input-group input-group-lg">
                     <span class="input-group-text">Prefijo</span>
                     <input type="text" class="form-control" id="pre" name="prefix" placeholder="">
                     
                 </div>
             </div>
-            <div class="col-12 col-lg-8 mb-4">
+            <div class="col-12 col-md-6 mb-4">
+
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">Añadir Repetidos</span>
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="checkbox" id="repetido" name="repetido" value="" aria-label="Checkbox for following text input">
+                    </div>
+                </div>
+                    
+            </div>
+
+            <div class="col-12 col-md-12 mb-4">
                 <div class="input-group input-group-lg">
                     <input type="file" class="form-control" name="filenumber" id="filenumber" aria-describedby="btnfile" multiple accept=".csv"/>
                     <button type="button" class="btn btn-secondary fw-bold "  id="btnfile"><b>Procesar</b></button>
                 </div>
             </div>
-            <div class="col-12 col-lg-8 text-center mt-4">
+            <div class="col-12 col-lg-10 text-center mt-4">
                 <h4>Ultimos archivos exportados:</h4>
                 <div id="fileList" class="list-group fileList"></div>
             </div>
         </div>
-        <div class="col-12 col-lg-8">
+        <div class="col-12 col-lg-10">
             <div id="results"></div>
         </div>
         <div class="col-12 col-lg-8 col-xl-6" style="display:none" id="tbsearch">

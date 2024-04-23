@@ -45,16 +45,18 @@ if( isset($_POST["prefix"]) ){
     $cant=0;
     $cant_rep=0;
     $prefijo=$_POST["prefix"];
+    $repetido=filter_var($_POST["repetido"], FILTER_VALIDATE_BOOLEAN);
     
 
     $vcffile="";
     //if (move_uploaded_file($tmp_name, $upload_dir . $name)) {
+    
     foreach ($_FILES['filenumber']['tmp_name'] as $key => $tmp_filename) {
         $tmp_name = $_FILES['filenumber']['tmp_name'][$key];
         // Retrieve the original file name
         //$name = $_FILES['filenumber']['name'];
         
-        $delimiter=detect_csv_delimiter($tmp_name);
+        $delimiter=detect_csv_delimiter($tmp_name);  
         if ($delimiter !== false) {
             $file = fopen($tmp_name, "r");
             if($file){
@@ -80,7 +82,7 @@ if( isset($_POST["prefix"]) ){
                         $result= mysqli_query($connection,$query);
     
                         if(!$result) {
-                            die('Query Error 1 ' . mysqli_error($connection));
+                            #die('Query Error 1 ' . mysqli_error($connection));
                         }else{
     
                             if(mysqli_num_rows($result)==0){
@@ -89,27 +91,32 @@ if( isset($_POST["prefix"]) ){
                                 $result= mysqli_query($connection,$query);
         
                                 if(!$result) {
-                                    die('Query Error 2 ' . mysqli_error($connection));
+                                    #die('Query Error 2 ' . mysqli_error($connection));
+                                }else{
+
+                                    $cant++;
+                                    
+                                    $vcffile .= "\r\nBEGIN:VCARD\r\n";
+                                    $vcffile .= "VERSION:2.1\r\n";
+                                    $vcffile .= "N:".$nombre.";".$prefijo.";".formatNumber($cant).";;\r\n";
+                                    $vcffile .= "FN:".$prefijo." ".formatNumber($cant)." ".$nombre."\r\n";
+                                    $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
+                                    $vcffile .= "END:VCARD";
                                 }
-                                $cant++;
-                                
-                                $vcffile .= "\r\nBEGIN:VCARD\r\n";
-                                $vcffile .= "VERSION:2.1\r\n";
-                                $vcffile .= "N:".$nombre.";".$prefijo.";".formatNumber($cant).";;\r\n";
-                                $vcffile .= "FN:".$prefijo." ".formatNumber($cant)." ".$nombre."\r\n";
-                                $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
-                                $vcffile .= "END:VCARD";
         
                             }else{
                                 //nada nananina con ese numero
-                                $cant_rep++;
-                                
-                                $vcffile .= "\r\nBEGIN:VCARD\r\n";
-                                $vcffile .= "VERSION:2.1\r\n";
-                                $vcffile .= "N:".$nombre.";Rep".$prefijo.";".formatNumber($cant_rep).";;\r\n";
-                                $vcffile .= "FN:Rep".$prefijo." ".formatNumber($cant_rep)." ".$nombre."\r\n";
-                                $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
-                                $vcffile .= "END:VCARD";
+                                if( $repetido ){
+                                    $cant_rep++;
+                                    
+                                    $vcffile .= "\r\nBEGIN:VCARD\r\n";
+                                    $vcffile .= "VERSION:2.1\r\n";
+                                    $vcffile .= "N:".$nombre.";Rep".$prefijo.";".formatNumber($cant_rep).";;\r\n";
+                                    $vcffile .= "FN:Rep".$prefijo." ".formatNumber($cant_rep)." ".$nombre."\r\n";
+                                    $vcffile .= "TEL;TYPE=CELL:+".$numero."\r\n";
+                                    $vcffile .= "END:VCARD";
+                                }
+
                             }
                             
                         }
