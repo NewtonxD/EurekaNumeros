@@ -81,7 +81,6 @@ function verificarNumero(){
 
 function buscarNumeros(){
     $('#txtnum').blur();
-    $('#spinload').css("visibility","visible");
 
     $.ajax({
         url:'numbers.php',
@@ -96,11 +95,11 @@ function buscarNumeros(){
                 '<tr>'+
                 `    <td>${res[e].id}</td>`+
                 `    <td>${res[e].num}</td>`+
+                `    <td>${res[e].fecha}</td>`+
                 `    <td><a class="btn btn-danger fw-bold" onclick="borrarNumero(${res[e].id})"> - </></td>`+
                 '</tr>'
                 );
             }
-            $('#spinload').css("visibility","hidden");
             subrayar();
         },
         error: function(response){
@@ -216,20 +215,14 @@ function procesarArchivo(){
 
     formData.append("prefix",$("#pre").val());
     formData.append("repetido",$("#repetido").is(':checked'));
-
-    console.log(formData);
-
-    for (var pair of formData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
-    }
-
+    
     $.ajax({
         url:'file-numbers.php',
         type:"POST",
         async:true,
         data:formData,
         processData: false,
-        contentType: false,
+        contentType:false,
         success: function(response){
             //var res=$.parseJSON(response);
             /*if(res[0].result==="success") num_procesados+=1;
@@ -297,21 +290,6 @@ function listFiles(){
 $(document).ready(function(){
 
 
-    
-    //codeOptions();
-
-
-    //fill all data on table
-
-    /*$('input[type=number][max]:not([max=""])').on('input', function(ev) {
-        var $this = $(this);
-        var maxlength = $this.attr('max').length;
-        var value = $this.val();
-        if (value && value.length >= maxlength) {
-            $this.val(value.substr(0, maxlength));
-        }
-    });*/
-
     listFiles();
 
     $("#btnadd").on("click",guardarNumero);
@@ -320,36 +298,17 @@ $(document).ready(function(){
 
 
     $('#txtnum').keyup(function (e) {
-        /*var $this = $(this);
-        var maxlength = $("#maxlen").val();
-        var value = $this.val();
-        if (value && value.length >= maxlength) {
-            $this.val(value.substr(0, maxlength));
-        }*/
 
 
         $("#btnadd").attr("disabled","disabled");
 
-        if($("#switcher").is(":checked")) {
-            clearTimeout(timeout);
-            timeout=setTimeout(function(e){
-                
-                buscarNumeros();
+        clearTimeout(timeout);
+        timeout=setTimeout(function(e){
+            
+            verificarNumero();
 
-            },1600);
-
-        }else{
-
-            clearTimeout(timeout);
-            timeout=setTimeout(function(e){
-                
-                verificarNumero();
-
-            },1600);
-            /*if($this.val().length == maxlength){
-                guardarNumero();
-            } */
-        }
+        },1600);
+        
 
     });
 

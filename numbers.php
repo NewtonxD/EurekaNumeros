@@ -73,11 +73,10 @@ if( isset($_POST["num"]) ){
 
 if(isset($_GET["num"])){
     $num=$_GET["num"];
-    $code=$_GET["code"];
     $query="SELECT a.id,
         a.num as num,
-        '' as pais
-        FROM num a WHERE a.num like '%+".$code.$num."%' ORDER BY id DESC LIMIT 2000";
+        a.crd_at as fecha
+        FROM num a WHERE a.num like '%".$num."%' ORDER BY id DESC LIMIT 2000";
     
     $result= mysqli_query($connection,$query);
 
@@ -90,8 +89,8 @@ if(isset($_GET["num"])){
     while($row = mysqli_fetch_array($result)) {
         $json[] = array(
           'id' => $row['id'],
-          'pais' => $row['pais'],
-          'num' => $row['num']
+          'num' => $row['num'],
+          'fecha' => $row['fecha']
         );
     }
 
