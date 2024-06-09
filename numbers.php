@@ -81,7 +81,7 @@ if(isset($_GET["num"])){
         FROM num a 
         WHERE "
             .($num!='' ? " a.num like '%".$num."%' AND " : " true AND ")
-            .($prefijo!='' ? " a.nom ilike '".$prefijo."' " : " true ")
+            .($prefijo!='' ? " upper(a.nom) like upper('".$prefijo."') " : " true ")
         ." ORDER BY id DESC,4 LIMIT 2000";
     
     $result= mysqli_query($connection,$query);
