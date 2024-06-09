@@ -72,12 +72,12 @@ if( isset($_POST["num"]) ){
 }
 
 if(isset($_GET["num"])){
-    $num=$_GET["num"];
-    $prefijo=$_GET["prefijo"];
+    $num=urldecode($_GET["num"]);
+    $prefijo=urldecode($_GET["prefijo"]);
     $query="SELECT a.id,
         a.num as num,
         a.crd_at as fecha,
-        coalesce(a.nom,'') as prefijo
+        coalesce(a.nom,'') as contacto
         FROM num a 
         WHERE "
             .($num!='' ? " a.num like '%".$num."%' AND " : " true AND ")
@@ -97,7 +97,7 @@ if(isset($_GET["num"])){
           'id' => $row['id'],
           'num' => $row['num'],
           'fecha' => $row['fecha'],
-          'prefijo' => $row['prefijo']
+          'contacto' => $row['contacto']
         );
     }
 

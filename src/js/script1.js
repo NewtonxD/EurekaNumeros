@@ -48,7 +48,7 @@ function buscarNumeros(){
                 `    <td>${res[e].id}</td>`+
                 `    <td>${res[e].num}</td>`+
                 `    <td>${res[e].fecha}</td>`+
-                `    <td>${res[e].prefijo}</td>`+
+                `    <td>${res[e].contacto}</td>`+
                 `    <td><a class="btn btn-danger fw-bold" onclick="borrarNumero(${res[e].id})"> - </></td>`+
                 '</tr>'
                 );

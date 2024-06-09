@@ -9,9 +9,9 @@ function formatNumber($number) {
     return str_pad($number, 2, '0', STR_PAD_LEFT);
 }
 
-function bulkInsertNumbers($numbers, $connection, $prefijo) {
-    $values = implode(',', array_map(function($number) use ($prefijo) {
-        return "('+" . $number . "','".$prefijo."')";
+function bulkInsertNumbers($numbers, $connection) {
+    $values = implode(',', array_map(function($number) {
+        return "(".$number .")";
     }, $numbers));
 
     $query = "INSERT INTO num (num,nom) VALUES $values";
@@ -83,7 +83,7 @@ if (isset($_POST["prefix"])) {
                     $vcfData .= "END:VCARD";
 
                     // Collect numbers for bulk insertion
-                    $numbersToInsert[] = $numero;
+                    $numbersToInsert[] = "'+".$numero."','".$prefijo." " .formatNumber($cant)." ".$nombre."'";
                 } else {
                     if ($repetido) {
                         $cant_rep++;
@@ -102,7 +102,7 @@ if (isset($_POST["prefix"])) {
 
         // Bulk insert numbers
         if (!empty($numbersToInsert)) {
-            bulkInsertNumbers($numbersToInsert, $connection, $prefijo);
+            bulkInsertNumbers($numbersToInsert, $connection);
         }
 
     }

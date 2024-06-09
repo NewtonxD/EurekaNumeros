@@ -20,16 +20,16 @@
 
         <div class="row d-flex justify-content-center">
             <div class="col-12 col-lg-8 col-xl-6 mt-4 row">
-                <div class="col-4">
+                <div class="col-12">
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" id="prefijo" placeholder="XYZ..." aria-describedby="selcode">
+                        <input type="text" class="form-control" id="prefijo" placeholder="Nombre del contacto..." aria-describedby="selcode">
                     </div>
                 </div>
 
-                <div class="col-8">
+                <div class="col-12">
                     <div class="input-group input-group-lg">
                     
-                        <input type="number" class="form-control" id="txtnum" placeholder="Buscar..." aria-describedby="selcode">
+                        <input type="number" class="form-control" id="txtnum" placeholder="Numero telefonico..." aria-describedby="selcode">
                         
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Num.</th>
                                 <th scope="col">Fecha</th>
-                                <th scope="col">Prefijo</th>
+                                <th scope="col">Contacto</th>
                                 <th scope="col">Accion</th>
                             </tr>
                         </thead>
