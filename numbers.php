@@ -73,10 +73,16 @@ if( isset($_POST["num"]) ){
 
 if(isset($_GET["num"])){
     $num=$_GET["num"];
+    $prefijo=$_GET["prefijo"];
     $query="SELECT a.id,
         a.num as num,
-        a.crd_at as fecha
-        FROM num a WHERE a.num like '%".$num."%' ORDER BY id DESC LIMIT 2000";
+        a.crd_at as fecha,
+        coalesce(a.nom,'') as prefijo
+        FROM num a 
+        WHERE "
+            .($num!='' ? " a.num like '%".$num."%' AND " : " true AND ")
+            .($prefijo!='' ? " a.nom = '%".$prefijo."%' " : " true ")
+        ." ORDER BY id DESC,4 LIMIT 2000";
     
     $result= mysqli_query($connection,$query);
 
@@ -90,7 +96,8 @@ if(isset($_GET["num"])){
         $json[] = array(
           'id' => $row['id'],
           'num' => $row['num'],
-          'fecha' => $row['fecha']
+          'fecha' => $row['fecha'],
+          'prefijo' => $row['prefijo']
         );
     }
 

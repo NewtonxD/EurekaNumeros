@@ -38,7 +38,7 @@ function buscarNumeros(){
         url:'numbers.php',
         type:"GET",
         async:false,
-        data:{num:$("#txtnum").val(),code:$("#selcode").val()},
+        data:{num:$("#txtnum").val(),prefijo:$("#prefijo").val()},
         success: function(response){
             var res=$.parseJSON(response);
             $("#tbody").empty();
@@ -48,6 +48,7 @@ function buscarNumeros(){
                 `    <td>${res[e].id}</td>`+
                 `    <td>${res[e].num}</td>`+
                 `    <td>${res[e].fecha}</td>`+
+                `    <td>${res[e].prefijo}</td>`+
                 `    <td><a class="btn btn-danger fw-bold" onclick="borrarNumero(${res[e].id})"> - </></td>`+
                 '</tr>'
                 );
@@ -96,6 +97,7 @@ function borrarNum(num){
 
     //borrar valor del campo
     $('#txtnum').val("");
+    $('#prefijo').val("")
     $('#txtnum').focus();
 }
 
@@ -110,5 +112,15 @@ $(document).ready(function(){
 
         },1600);
     });
+
+    $('#prefijo').keyup(function (e) {
+        clearTimeout(timeout);
+        timeout=setTimeout(function(e){
+            
+            buscarNumeros();
+
+        },1200);
+    });
+    
 });
 
