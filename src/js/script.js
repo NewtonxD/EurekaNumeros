@@ -248,7 +248,7 @@ function procesarArchivo(){
             document.body.removeChild(a);
 
             $("#fileList").empty();
-            listFiles();
+            listFiles(true);
             $(document.body).css({'cursor' : 'default'});
         },
         error: function(response){
@@ -264,7 +264,7 @@ function clickFirstXElements(divId, x) {
     });
 }
 
-function listFiles(){
+function listFiles(clickOnSecond=false){
     $.ajax({
         url: 'get_files.php', // PHP script to retrieve file list
         type: 'GET',
@@ -277,6 +277,9 @@ function listFiles(){
 
             // Iterate over file list and append to HTML
             $.each(response, function(index, file) {
+                if(index===2){
+                    $('#fileList').children().last().click();
+                }
                 $('#fileList').append('<a  class="list-group-item list-group-item-action" href="download.php?filename=' + file.filename + '">'+index+'. '+ file.filename + '</a>');
             });
         },

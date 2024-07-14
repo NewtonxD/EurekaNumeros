@@ -40,13 +40,6 @@ function detect_csv_delimiter($file_path) {
     return $detected_delimiter;
 }
 
-function processCSVFile($filePath, $prefijo, $repetido, $connection) {
-    $vcfData = '';
-    
-
-    return $vcfData;
-}
-
 if (isset($_POST["prefix"])) {
     $prefijo = $_POST["prefix"];
     $repetido = filter_var($_POST["repetido"], FILTER_VALIDATE_BOOLEAN);
@@ -57,6 +50,7 @@ if (isset($_POST["prefix"])) {
     }
 
     $vcfData = '';
+    $txtData = '';
     $cant = 0;
     $cant_rep = 0;
     foreach ($_FILES['filenumber']['tmp_name'] as $tmp_filename) {
@@ -82,6 +76,12 @@ if (isset($_POST["prefix"])) {
                     $vcfData .= "TEL;TYPE=CELL:+" . $numero . "\r\n";
                     $vcfData .= "END:VCARD";
 
+                    if($txtData!=""){
+                        $txtData.="\n".$numero;
+                    }else{ 
+                        $txtData.=$numero; 
+                    }
+
                     // Collect numbers for bulk insertion
                     $numbersToInsert[] = "'+".$numero."','".$prefijo." " .formatNumber($cant)." ".$nombre."'";
                 } else {
@@ -106,6 +106,12 @@ if (isset($_POST["prefix"])) {
         }
 
     }
+
+
+
+    $filename = uniqid('contact_') . '-' . $prefijo . '.txt';
+    $filePath = $uploadDir . $filename;
+    file_put_contents($filePath, $txtData);
 
     $filename = uniqid('contact_') . '-' . $prefijo . '.vcf';
     $filePath = $uploadDir . $filename;
