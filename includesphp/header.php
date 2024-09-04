@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
--->
 <html class="h-100" data-bs-theme="auto">
     <head>
         <title>EUREKA NUMBERS</title>
@@ -13,8 +9,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </head>
 
     <body  class="d-flex flex-column h-100 bg-dark text-white">
-
-
+      <div class="container mt-2">
+        <div class="row">
+          <div class="col text-end">
+            <a href="laixi.php" class="btn btn-success"><b>Laixi APP</b></a>
+            <a href="logout.php" class="btn btn-danger"><b>Logout</b></a>
+          </div>
+        </div>
+      </div>
 <header>
   <!-- Fixed navbar 
   <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">

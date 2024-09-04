@@ -1,4 +1,5 @@
 <?php
+include('includesphp/authentication.php');
 $uploadDir = __DIR__ . '/.upload/';
 
 // Get list of files in upload directory

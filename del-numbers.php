@@ -1,4 +1,5 @@
 <?php
+include('includesphp/authentication.php');
 include('includesphp/conexion.php');
 
 if( isset($_POST["id"]) ){

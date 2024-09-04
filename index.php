@@ -1,6 +1,7 @@
 <?php
+    include('./includesphp/authentication.php');
     include('./includesphp/header.php');
-    include('./includesphp/conexion.php');
+    //include('./includesphp/conexion.php');
     
 ?>
 
