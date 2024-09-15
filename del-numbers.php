@@ -7,6 +7,8 @@ if( isset($_POST["id"]) ){
 
     $query="UPDATE num SET act=false WHERE id=$id";
 
+    $connection=connect();
+
     $result= mysqli_query($connection,$query);
 
     $json = array();
@@ -22,6 +24,8 @@ if( isset($_POST["id"]) ){
             "text" => "El número fue borrado exitosamente."
         );
     }
+
+    mysqli_close($connection);
 
     $jsonstring = json_encode($json);
     echo $jsonstring;

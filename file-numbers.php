@@ -9,13 +9,13 @@ function formatNumber($number) {
     return str_pad($number, 2, '0', STR_PAD_LEFT);
 }
 
-function bulkInsertNumbers($numbers, $connection) {
+function bulkInsertNumbers($numbers) {
     $values = implode(',', array_map(function($number) {
         return "(".$number .")";
     }, $numbers));
 
     $query = "INSERT INTO num (num,nom) VALUES $values";
-    return mysqli_query($connection, $query);
+    return $query;
 }
 
 function detect_csv_delimiter($file_path) {
@@ -64,6 +64,7 @@ if (isset($_POST["prefix"])) {
             $numero = preg_replace('/[^0-9]/', '', $row[1]);
 
             $query = "SELECT * FROM num WHERE num LIKE '%$numero%'";
+            $connection=connect();
             $result = mysqli_query($connection, $query);
 
             if ($result) {
@@ -96,13 +97,16 @@ if (isset($_POST["prefix"])) {
                     }
                 }
             }
+            mysqli_close($connection);
         }
 
         fclose($file);
 
         // Bulk insert numbers
         if (!empty($numbersToInsert)) {
-            bulkInsertNumbers($numbersToInsert, $connection);
+            $connection=connect();
+            mysqli_query($connection, bulkInsertNumbers($numbersToInsert));
+            mysqli_close($connection);
         }
 
     }

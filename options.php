@@ -7,8 +7,8 @@ if( isset($_GET) ){
     $query="SELECT concat('+ ',phone,' ',code) as code,id,limite FROM countries 
             WHERE activo
             ORDER BY phone;";
-
-    $result= mysqli_query($connection,$query);
+    $connection=connect();
+    $result = mysqli_query($connection,$query);
 
     if(!$result) {
         die('Query Error ' . mysqli_error($connection));
@@ -23,6 +23,7 @@ if( isset($_GET) ){
         'id' => $row['id']
         );
     }
+    mysqli_close($connection);
 
     $jsonstring = json_encode($json);
 

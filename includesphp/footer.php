@@ -4,7 +4,5 @@
   </div>
 </footer>
 <script src="./src/js/bootstrap.bundle.min.js" ></script>
-<script src="./src/js/jquery-3.7.1.min.js" ></script>
-<script src="./src/js/script.js" ></script>
 </body>
 </html>

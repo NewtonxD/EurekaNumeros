@@ -1,11 +1,11 @@
 <?php
 session_start();
-require('includesphp/conexion.php');
 
 // Process registration form submission
 $error = '';
 $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require('includesphp/conexion.php');
     $inputUsername = trim($_POST['username']);
     $inputEmail = trim($_POST['email']);
     $inputPassword = trim($_POST['password']);
@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Las contraseñas no encajan.';
     } else {
         // Check if username or email already exists
+        $pdo = connect_pdo();
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username OR email = :email");
         $stmt->execute(['username' => $inputUsername, 'email' => $inputEmail]);
         if ($stmt->fetchColumn() > 0) {
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./src/css/bootstrap.min.css"  rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -103,6 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./src/js/bootstrap.bundle.min.js" ></script>
 </body>
 </html>

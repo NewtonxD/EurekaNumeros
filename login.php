@@ -1,14 +1,15 @@
 <?php
 session_start();
-include('includesphp/conexion.php');
 
 // Process login form submission
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    include('includesphp/conexion.php');
     $inputUsername = trim($_POST['username']);
     $inputPassword = trim($_POST['password']);
 
     // Query to find user by username
+    $pdo = connect_pdo();
     $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = :username and active");
     $stmt->execute(['username' => $inputUsername]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -40,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link  href="./src/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -84,6 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p>No tienes usuario? <a href="register.php">Registrate</a></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./src/js/bootstrap.bundle.min.js" ></script>
 </body>
 </html>

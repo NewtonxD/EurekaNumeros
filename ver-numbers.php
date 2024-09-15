@@ -6,6 +6,7 @@ if( isset($_POST["num"]) ){
     $num=$_POST["num"];
     $code=$_POST["code"];
     $query="SELECT a.* FROM num a WHERE a.num like '%+".$code.$num."%' AND a.act";
+    $connection = connect();
     $result= mysqli_query($connection,$query);
 
     if(!$result) {
@@ -29,6 +30,7 @@ if( isset($_POST["num"]) ){
             "text" => "El número <b>+".$code.$num."</b> ya existe."
         );
     }
+    mysqli_close($connection);
 
     $jsonstring = json_encode($json);
     echo $jsonstring;

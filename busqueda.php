@@ -68,7 +68,7 @@
     </div>
   </div>
 </main>
-
+<script src="./src/js/script1.js" ></script>
 <?php
-    include('./includesphp/footer1.php');
+    include('./includesphp/footer.php');
 ?>
