@@ -10,12 +10,30 @@ function formatNumber($number) {
 }
 
 function bulkInsertNumbers($numbers) {
-    $values = implode(',', array_map(function($number) {
+    /*$values = implode(',', array_map(function($number) {
         return "(".$number .")";
     }, $numbers));
 
     $query = "INSERT INTO num (num,nom) VALUES $values";
-    return $query;
+    return $query;*/
+    $chunkSize = 500; // Limit to 500 entries per query
+    $queries = [];
+    
+    // Break the numbers into chunks of $chunkSize
+    $chunks = array_chunk($numbers, $chunkSize);
+
+    foreach ($chunks as $chunk) {
+        // Prepare values for the current chunk
+        $values = implode(',', array_map(function($number) {
+            return "(" . $number . ")";
+        }, $chunk));
+
+        // Create the query for this chunk
+        $query = "INSERT INTO num (num) VALUES $values";
+        $queries[] = $query;
+    }
+    
+    return $queries;
 }
 
 function detect_csv_delimiter($file_path) {
@@ -53,18 +71,20 @@ if (isset($_POST["prefix"])) {
     $txtData = '';
     $cant = 0;
     $cant_rep = 0;
+    $numbersToInsert[];
+    
     foreach ($_FILES['filenumber']['tmp_name'] as $tmp_filename) {
 
         $delimiter = detect_csv_delimiter($tmp_filename);
-
         $file = fopen($tmp_filename, "r");
-
+        
+        $connection=connect();
         while (($row = fgetcsv($file, 0, $delimiter)) !== false) {
             $nombre = preg_replace('/[^a-zA-Z]/', '', $row[0]);
             $numero = preg_replace('/[^0-9]/', '', $row[1]);
 
             $query = "SELECT * FROM num WHERE num LIKE '%$numero%'";
-            $connection=connect();
+            
             $result = mysqli_query($connection, $query);
 
             if ($result) {
@@ -97,20 +117,14 @@ if (isset($_POST["prefix"])) {
                     }
                 }
             }
-            mysqli_close($connection);
         }
+        mysqli_close($connection);
 
         fclose($file);
 
-        // Bulk insert numbers
-        if (!empty($numbersToInsert)) {
-            $connection=connect();
-            mysqli_query($connection, bulkInsertNumbers($numbersToInsert));
-            mysqli_close($connection);
-        }
-
     }
-
+    
+    
 
 
     $filename = uniqid('contact_') . '-' . $prefijo . '.txt';
@@ -120,6 +134,17 @@ if (isset($_POST["prefix"])) {
     $filename = uniqid('contact_') . '-' . $prefijo . '.vcf';
     $filePath = $uploadDir . $filename;
     file_put_contents($filePath, $vcfData);
+    
+    
+    // Bulk insert numbers
+    $queries = bulkInsertNumbers($numbersToInsert);
+    foreach ($queries as $query) {
+        // Execute each query
+        // mysqli_query($conn, $query);
+        $connection=connect();
+        mysqli_query($connection, $query);
+        mysqli_close($connection);
+    }
 
     header('Content-Type: text/x-vcard');
     header('Content-Disposition: attachment; filename="' . $filename . '.vcf"');
