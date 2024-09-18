@@ -10,13 +10,13 @@ function formatNumber($number) {
 }
 
 function bulkInsertNumbers($numbers) {
-    /*$values = implode(',', array_map(function($number) {
+    $values = implode(',', array_map(function($number) {
         return "(".$number .")";
     }, $numbers));
 
     $query = "INSERT INTO num (num,nom) VALUES $values";
-    return $query;*/
-    $chunkSize = 500; // Limit to 500 entries per query
+    return $query;
+    /*$chunkSize = 500; // Limit to 500 entries per query
     $queries = [];
     
     // Break the numbers into chunks of $chunkSize
@@ -33,7 +33,7 @@ function bulkInsertNumbers($numbers) {
         $queries[] = $query;
     }
     
-    return $queries;
+    return $queries;*/
 }
 
 function detect_csv_delimiter($file_path) {
@@ -71,7 +71,7 @@ if (isset($_POST["prefix"])) {
     $txtData = '';
     $cant = 0;
     $cant_rep = 0;
-    $numbersToInsert[];
+    $numbersToInsert=[];
     
     foreach ($_FILES['filenumber']['tmp_name'] as $tmp_filename) {
 
@@ -82,8 +82,8 @@ if (isset($_POST["prefix"])) {
         while (($row = fgetcsv($file, 0, $delimiter)) !== false) {
             $nombre = preg_replace('/[^a-zA-Z]/', '', $row[0]);
             $numero = preg_replace('/[^0-9]/', '', $row[1]);
-
-            $query = "SELECT * FROM num WHERE num LIKE '%$numero%'";
+            
+            $query = "SELECT * FROM num WHERE num = '+".$numero."'";
             
             $result = mysqli_query($connection, $query);
 
@@ -137,14 +137,19 @@ if (isset($_POST["prefix"])) {
     
     
     // Bulk insert numbers
-    $queries = bulkInsertNumbers($numbersToInsert);
+    $query = bulkInsertNumbers($numbersToInsert);
+    $connection=connect();
+    mysqli_query($connection, $query);
+    mysqli_close($connection);
+
+    /*$queries = bulkInsertNumbers($numbersToInsert);
     foreach ($queries as $query) {
         // Execute each query
         // mysqli_query($conn, $query);
         $connection=connect();
         mysqli_query($connection, $query);
         mysqli_close($connection);
-    }
+    }*/
 
     header('Content-Type: text/x-vcard');
     header('Content-Disposition: attachment; filename="' . $filename . '.vcf"');
@@ -152,3 +157,4 @@ if (isset($_POST["prefix"])) {
 }
 
 ?>
+
