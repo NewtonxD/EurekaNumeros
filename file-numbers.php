@@ -72,6 +72,7 @@ if (isset($_POST["prefix"])) {
     $cant = 0;
     $cant_rep = 0;
     $numbersToInsert=[];
+    $numbersInFile=[];
     
     foreach ($_FILES['filenumber']['tmp_name'] as $tmp_filename) {
 
@@ -82,6 +83,14 @@ if (isset($_POST["prefix"])) {
         while (($row = fgetcsv($file, 0, $delimiter)) !== false) {
             $nombre = preg_replace('/[^a-zA-Z]/', '', $row[0]);
             $numero = preg_replace('/[^0-9]/', '', $row[1]);
+            
+            if($numero=="" && isset($row[2])){
+                $numero = preg_replace('/[^0-9]/', '', $row[2]);
+            }
+            
+            if($numero=="") continue;
+            
+            if(in_array($numero,$numbersInFile)) continue;
             
             $query = "SELECT * FROM num WHERE num = '+".$numero."'";
             
@@ -104,6 +113,7 @@ if (isset($_POST["prefix"])) {
                     }
 
                     // Collect numbers for bulk insertion
+                    $numbersInFile[] = $numero;
                     $numbersToInsert[] = "'+".$numero."','".$prefijo." " .formatNumber($cant)." ".$nombre."'";
                 } else {
                     if ($repetido) {
