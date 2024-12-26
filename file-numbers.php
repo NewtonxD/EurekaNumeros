@@ -13,8 +13,12 @@ function bulkInsertNumbers($numbers) {
     $values = implode(',', array_map(function($number) {
         return "(".$number .")";
     }, $numbers));
-
-    $query = "INSERT INTO num (num,nom) VALUES $values";
+    
+    $query="";
+    
+    if($values!="")
+        $query = "INSERT INTO num (num,nom) VALUES $values";
+        
     return $query;
     /*$chunkSize = 500; // Limit to 500 entries per query
     $queries = [];
@@ -134,9 +138,9 @@ if (isset($_POST["prefix"])) {
 
     }
     
+    // Bulk insert numbers
     
-
-
+        
     $filename = uniqid('contact_') . '-' . $prefijo . '.txt';
     $filePath = $uploadDir . $filename;
     file_put_contents($filePath, $txtData);
@@ -144,14 +148,15 @@ if (isset($_POST["prefix"])) {
     $filename = uniqid('contact_') . '-' . $prefijo . '.vcf';
     $filePath = $uploadDir . $filename;
     file_put_contents($filePath, $vcfData);
-    
-    
-    // Bulk insert numbers
-    $query = bulkInsertNumbers($numbersToInsert);
-    $connection=connect();
-    mysqli_query($connection, $query);
-    mysqli_close($connection);
 
+    $query = bulkInsertNumbers($numbersToInsert);
+    
+    if($query!=""){
+        $connection=connect();
+        mysqli_query($connection, $query);
+        mysqli_close($connection);
+    }
+    
     /*$queries = bulkInsertNumbers($numbersToInsert);
     foreach ($queries as $query) {
         // Execute each query
@@ -162,7 +167,7 @@ if (isset($_POST["prefix"])) {
     }*/
 
     header('Content-Type: text/x-vcard');
-    header('Content-Disposition: attachment; filename="' . $filename . '.vcf"');
+    header('Content-Disposition: attachment; filename="download.vcf"');
     echo $vcfData;
 }
 
