@@ -95,7 +95,19 @@ if (isset($_POST["prefix"])) {
             if($numero=="") continue;
             
             if(in_array($numero,$numbersInFile)) continue;
+
+            $iniciales = "1,221";
+            $listaIniciales = explode(',', $iniciales);
+            $ignorar = false;
+            foreach ($listaIniciales as $inicial) {
+                if (strpos($numero, $inicial) === 0) { // Si $numero empieza con una inicial
+                    $ignorar = true;
+                    break;
+                }
+            }
             
+            if($ignorar) continue;
+
             $query = "SELECT * FROM num WHERE num = '+".$numero."'";
             
             $result = mysqli_query($connection, $query);
